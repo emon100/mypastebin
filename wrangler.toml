@@ -1,0 +1,16 @@
+name = "mypastebin"
+main = "src/worker/index.ts"
+compatibility_date = "2025-05-05"
+
+routes = [
+  { pattern = "paste.emon100.com", custom_domain = true }
+]
+
+[[kv_namespaces]]
+binding = "PASTES"
+id = "dc5d17e294214ee887865a99de388577"
+preview_id = "dc5d17e294214ee887865a99de388577"
+
+[assets]
+directory = "./dist/"
+not_found_handling = "single-page-application"
