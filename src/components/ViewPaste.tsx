@@ -10,9 +10,7 @@ import {
   CircularProgress
 } from '@mui/material';
 
-const API_URL = import.meta.env.PROD 
-  ? 'https://paste.emon100.com'
-  : '';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAABfpP4I26bhLp-Vo';
 

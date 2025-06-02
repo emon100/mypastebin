@@ -1,0 +1,2 @@
+ADMIN_PASSWORD=admin
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA # For testing: https://developers.cloudflare.com/turnstile/troubleshooting/testing/

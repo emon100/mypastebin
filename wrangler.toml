@@ -2,9 +2,10 @@ name = "mypastebin"
 main = "src/worker/index.ts"
 compatibility_date = "2025-05-05"
 
-routes = [
-  { pattern = "paste.emon100.com", custom_domain = true }
-]
+[[routes]]
+# Refer to https://developers.cloudflare.com/workers/wrangler/configuration/#routes
+pattern = "paste.emon100.com"
+custom_domain = true
 
 [[kv_namespaces]]
 binding = "PASTES"
