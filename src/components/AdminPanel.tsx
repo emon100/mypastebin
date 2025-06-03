@@ -1,25 +1,58 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Turnstile } from '@marsidev/react-turnstile';
-import {
-  Container,
-  Paper,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Snackbar,
-  Alert,
-} from '@mui/material';
-import { ContentCopy as CopyIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const StyledContainer = styled(Container)({
+  width: '100%',
+  maxWidth: 600,
+  margin: '0 auto',
+  padding: '0 16px',
+  boxSizing: 'border-box',
+  overflowX: 'hidden',
+  '@media (min-width: 600px)': {
+    padding: '0 32px',
+  },
+});
+
+const StyledPaper = styled(Paper)({
+  padding: '16px',
+  width: '100%',
+  boxSizing: 'border-box',
+  overflowX: 'hidden',
+  '@media (min-width: 600px)': {
+    padding: '32px',
+  },
+});
+
+const StyledPre = styled('pre')({
+  marginTop: 16,
+  padding: 16,
+  backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  borderRadius: 4,
+  overflow: 'auto',
+  wordBreak: 'break-all',
+  whiteSpace: 'pre-wrap',
+  maxWidth: '100%',
+});
 
 interface Paste {
   id: string;
@@ -138,19 +171,8 @@ export default function AdminPanel() {
   };
 
   return (
-    <Container
-      maxWidth={false}
-      disableGutters
-      sx={{
-        width: '100%',
-        maxWidth: 600,
-        mx: 'auto',
-        px: { xs: 1, sm: 2 },
-        boxSizing: 'border-box',
-        overflowX: 'hidden',
-      }}
-    >
-      <Paper elevation={3} sx={{ p: { xs: 1, sm: 4 }, width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
+    <StyledContainer maxWidth={false} disableGutters>
+      <StyledPaper elevation={3}>
         <Typography variant="h4" gutterBottom>
           所有 Paste
         </Typography>
@@ -272,7 +294,7 @@ export default function AdminPanel() {
         >
           返回首页
         </Button>
-      </Paper>
+      </StyledPaper>
 
       <Dialog
         open={showPreview}
@@ -285,18 +307,9 @@ export default function AdminPanel() {
           <Typography variant="caption" color="text.secondary" gutterBottom>
             创建于: {selectedPaste && new Date(selectedPaste.createdAt).toLocaleString()}
           </Typography>
-          <Box
-            component="pre"
-            sx={{
-              mt: 2,
-              p: 2,
-              bgcolor: 'grey.900',
-              borderRadius: 1,
-              overflow: 'auto',
-            }}
-          >
+          <StyledPre>
             {selectedPaste?.content}
-          </Box>
+          </StyledPre>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowPreview(false)}>关闭</Button>
@@ -344,6 +357,6 @@ export default function AdminPanel() {
           链接已复制到剪贴板
         </Alert>
       </Snackbar>
-    </Container>
+    </StyledContainer>
   );
 } 

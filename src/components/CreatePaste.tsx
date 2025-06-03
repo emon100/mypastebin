@@ -1,16 +1,15 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Turnstile } from '@marsidev/react-turnstile';
-import {
-  Container,
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Paper,
-  Snackbar,
-  Alert,
-} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -22,6 +21,21 @@ interface PasteResponse {
   title: string;
   createdAt: string;
 }
+
+const StyledContainer = styled(Container)({
+  paddingTop: 32,
+  paddingBottom: 32,
+});
+
+const StyledPaper = styled(Paper)({
+  padding: 32,
+});
+
+const StyledForm = styled('form')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+});
 
 export default function CreatePaste() {
   const [content, setContent] = useState('');
@@ -66,25 +80,23 @@ export default function CreatePaste() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
+    <StyledContainer maxWidth="md">
+      <StyledPaper elevation={3}>
         <Typography variant="h4" gutterBottom>
           创建新的 Paste
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
+        <StyledForm onSubmit={handleSubmit}>
           <TextField
             fullWidth
             label="标题"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            margin="normal"
           />
           <TextField
             fullWidth
             label="内容"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            margin="normal"
             multiline
             rows={10}
             required
@@ -95,10 +107,9 @@ export default function CreatePaste() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
             required
           />
-          <Box sx={{ mt: 2, mb: 2 }}>
+          <Box>
             <Turnstile
               ref={turnstileRef}
               siteKey={TURNSTILE_SITE_KEY}
@@ -112,13 +123,12 @@ export default function CreatePaste() {
             variant="contained"
             color="primary"
             size="large"
-            sx={{ mt: 2 }}
             disabled={!token}
           >
             创建
           </Button>
-        </Box>
-      </Paper>
+        </StyledForm>
+      </StyledPaper>
       <Snackbar
         open={!!error}
         autoHideDuration={6000}
@@ -128,6 +138,6 @@ export default function CreatePaste() {
           {error}
         </Alert>
       </Snackbar>
-    </Container>
+    </StyledContainer>
   );
 } 
