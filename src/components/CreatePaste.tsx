@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
@@ -126,6 +126,15 @@ export default function CreatePaste() {
             disabled={!token}
           >
             创建
+          </Button>
+          <Button
+            component={Link}
+            to="/admin"
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            管理员后台
           </Button>
         </StyledForm>
       </StyledPaper>

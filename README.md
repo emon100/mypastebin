@@ -44,8 +44,7 @@ npm install
 cp .env.example .env
 cp .dev.vars.example .dev.vars
 ```
-然后编辑 `.env` ‵.dev.vars` 文件，填入你的配置。
-
+然后编辑 `.env` 和 `.dev.vars` 文件，填入你的配置。
 
 所有前后端环境变量建议分开管理：
 
@@ -72,8 +71,7 @@ TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 ```
 
 - `ADMIN_PASSWORD`：管理员密码（后端校验）
-- `TURNSTILE_SECRET_KEY`：后端 Turnstile 验证码 secret  测试默认值详见：https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-
+- `TURNSTILE_SECRET_KEY`：后端 Turnstile 验证码 secret 测试默认值详见：https://developers.cloudflare.com/turnstile/troubleshooting/testing/
 
 1. 启动开发服务器：
 
@@ -85,7 +83,6 @@ npx wrangler dev # 本地模拟cloudflare后端
 启动前端
 ```bash
 npm run dev # 启动前端页面
-
 ```
 
 ## 部署前： Cloudflare 配置步骤
@@ -117,11 +114,10 @@ npm run dev # 启动前端页面
 1. 在 Cloudflare 控制台，进入 "Workers & Pages"。
 2. 选择你的 Worker，点击 "Settings" 标签。
 3. 在 "Environment Variables" 部分，点击 "Add Secret"。
-4. 输入变量名（例如 密码 `ADMIN_PASSWORD` 和 turnstile验证码后端密钥 `TURNSTILE_SECRET_KEY`），并填入对应的值。
+4. 输入变量名（例如 `ADMIN_PASSWORD` 和 `TURNSTILE_SECRET_KEY`），并填入对应的值。
 5. 点击 "Save and Deploy" 保存配置。
 
 完成以上步骤后，你的 Worker 将能够使用 KV 存储、自定义域名和 Secret 变量。
-
 
 ## 部署
 
@@ -150,8 +146,6 @@ npm run deploy
 ### 3. 验证部署
 
 部署完成后，访问你的自定义域名，确认应用正常运行。
-
-
 
 ## 许可证
 

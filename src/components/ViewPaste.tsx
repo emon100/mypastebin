@@ -1,17 +1,18 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Turnstile } from '@marsidev/react-turnstile';
 import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
-
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAABfpP4I26bhLp-Vo';
 
 interface Paste {
   id: string;
@@ -22,7 +23,7 @@ interface Paste {
 
 const StyledContainer = styled(Container)({
   width: '100%',
-  maxWidth: 600,
+  maxWidth: '100%',
   margin: '0 auto',
   padding: '0 16px',
   boxSizing: 'border-box',
@@ -51,6 +52,16 @@ const StyledPre = styled('pre')({
   wordBreak: 'break-all',
   whiteSpace: 'pre-wrap',
   maxWidth: '100%',
+  width: '100%',
+  fontSize: '0.875rem',
+  lineHeight: 1.5,
+});
+
+const HeaderContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  marginBottom: 16,
 });
 
 export default function ViewPaste() {
@@ -58,29 +69,17 @@ export default function ViewPaste() {
   const [paste, setPaste] = useState<Paste | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [token, setToken] = useState('');
-  const turnstileRef = useRef<any>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
-    if (token) {
-      fetchPaste();
-    }
-  }, [token]);
+    fetchPaste();
+  }, [id]);
 
   const fetchPaste = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/paste/${id}`, {
-        headers: {
-          'CF-Turnstile-Token': token,
-        },
-      });
+      const response = await fetch(`${API_URL}/api/paste/${id}`);
       if (!response.ok) {
-        const errorText = await response.text();
-        if (errorText === '密码错误') {
-          setToken('');
-          turnstileRef.current?.reset();
-        }
-        throw new Error(errorText);
+        throw new Error(await response.text());
       }
       const data = await response.json() as Paste;
       setPaste(data);
@@ -91,10 +90,25 @@ export default function ViewPaste() {
     }
   };
 
+  const handleCopy = async () => {
+    if (paste) {
+      try {
+        await navigator.clipboard.writeText(paste.content);
+        setCopySuccess(true);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setCopySuccess(false);
+  };
+
   if (error) {
     return (
       <StyledContainer>
-        <StyledPaper elevation={3} sx={{ textAlign: 'center' }}>
+        <StyledPaper elevation={3} sx={{ textAlign: 'left' }}>
           <Typography color="error" gutterBottom>
             {error}
           </Typography>
@@ -106,23 +120,23 @@ export default function ViewPaste() {
     );
   }
 
-  if (!paste) {
+  if (loading) {
     return (
       <StyledContainer>
         <StyledPaper elevation={3} sx={{ textAlign: 'center' }}>
-          <Typography gutterBottom>
-            请完成验证码验证以查看内容
+          <CircularProgress />
+        </StyledPaper>
+      </StyledContainer>
+    );
+  }
+
+  if (!paste) {
+    return (
+      <StyledContainer>
+        <StyledPaper elevation={3} sx={{ textAlign: 'left' }}>
+          <Typography color="error" gutterBottom>
+            Paste 不存在
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 2 }}>
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setToken}
-              onError={() => setToken('')}
-              onExpire={() => setToken('')}
-            />
-            {loading && <CircularProgress size={24} />}
-          </Box>
           <Button component={Link} to="/" variant="contained">
             返回首页
           </Button>
@@ -133,13 +147,22 @@ export default function ViewPaste() {
 
   return (
     <StyledContainer maxWidth={false} disableGutters>
-      <StyledPaper elevation={3}>
-        <Typography variant="h4" gutterBottom>
-          {paste.title}
-        </Typography>
-        <Typography variant="caption" color="text.secondary" gutterBottom>
-          创建于: {new Date(paste.createdAt).toLocaleString()}
-        </Typography>
+      <StyledPaper elevation={3} sx={{ textAlign: 'left' }}>
+        <HeaderContainer>
+          <div>
+            <Typography variant="h4" gutterBottom>
+              {paste.title}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" gutterBottom>
+              创建于: {new Date(paste.createdAt).toLocaleString()}
+            </Typography>
+          </div>
+          <Tooltip title="复制内容">
+            <IconButton onClick={handleCopy} color="primary">
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+        </HeaderContainer>
         <StyledPre>
           {paste.content}
         </StyledPre>
@@ -152,6 +175,16 @@ export default function ViewPaste() {
           创建新的 Paste
         </Button>
       </StyledPaper>
+      <Snackbar
+        open={copySuccess}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          内容已复制到剪贴板
+        </Alert>
+      </Snackbar>
     </StyledContainer>
   );
 } 

@@ -183,17 +183,6 @@ export default {
         return new Response('Invalid ID', { status: 400 });
       }
 
-      // 先验证验证码
-      const token = request.headers.get('CF-Turnstile-Token');
-      if (!token) {
-        return new Response('验证码未提供', { status: 400 });
-      }
-
-      const isValidToken = await validateTurnstileToken(token, env);
-      if (!isValidToken) {
-        return new Response('验证码验证失败', { status: 400 });
-      }
-
       const paste = await env.PASTES.get(id);
       if (!paste) {
         return new Response('Not found', { status: 404 });
